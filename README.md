@@ -14,7 +14,7 @@ pip install -r requirements.txt
 
 En este ejercicio abordaremos la implementación de un sistema simple para procesar órdenes de un negocio de comida rápida. Para ello simularemos una base de datos utilizando varios archivos en formato CSV, donde cada uno tendrá la información de los cajeros, los clientes y de los productos. El objetivo final del ejercicio es crear una aplicación que permita a un cajero preparar una orden para un cliente al ir agregando productos y calcular el monto total del pedido. Es importante notar que emplearemos varios paquetes que luego deben integrarse entre sí. 
 
-Adicionalmente, los cajeros, clientes y productos deben ser convertidos en objetos, de esta manera se pondrán en prácticas las técnicas del paradigma de la programación orientada a objetos. 
+Adicionalmente, los cajeros, clientes y productos deben ser convertidos en objetos, con el objetivo de aplicar las técnicas del paradigma de la programación orientada a objetos. 
 
 Finalmente, el ejercicio tiene una serie de pistas para que el estudiante pueda desarrollar y generar una solución con todo lo visto durante el desarrollo del curso.  
 
