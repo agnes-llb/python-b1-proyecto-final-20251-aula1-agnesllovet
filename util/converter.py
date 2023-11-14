@@ -1,32 +1,23 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar
-from users import *
+#Write your code here
 
-T = TypeVar("T")
 class Converter(ABC):
   @abstractmethod
   def convert(self,dataFrame,*args) -> list:
       pass  
-  def print(self, listaObjetos):
-    for item in listaObjetos:
+  def print(self, objects):
+    for item in objects:
       print(item.describe())
 
 class CashierConverter(Converter):
   def convert(self,dataFrame):    
-    cashiers = []
-    for index, row in dataFrame.iterrows():      
-      cashier = Cashier(str(row['dni']),row['name'],row['age'],row['timetable'],row['salary'])
-      cashiers.append(cashier)
-    return cashiers
+    #Write your code here
+    pass
 
 class CustomerConverter(Converter):
   #Write your code here
   pass
 
 class ProductConverter(Converter):
-  def convert(self,dataFrame,T):    
-    products = []
-    for index, row in dataFrame.iterrows():      
-      product = T(row['id'],row['name'],row['price'])
-      products.append(product)
-    return products
+  #Write your code here
+  pass

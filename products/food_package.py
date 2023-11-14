@@ -1,6 +1,6 @@
 #Write your code here
 
-class Container(ABC): 
+class FoodPackage (ABC): 
     @abstractmethod
     def pack(self)  -> str:
         pass
@@ -10,18 +10,18 @@ class Container(ABC):
     def describe(self):
         return f"Empaque: {self.pack()} , Material: {self.material()}"    
     
-class Wrapping(Container):  
+class Wrapping(FoodPackage):  
   #Write your code here
   pass
 
-class Bottle(Container):  
+class Bottle(FoodPackage):  
   #Write your code here
   pass
       
-class Glass(Container):  
+class Glass(FoodPackage):  
   #Write your code here
   pass
 
-class Box(Container):  
+class Box(FoodPackage):  
   #Write your code here
   pass
