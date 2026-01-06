@@ -102,10 +102,158 @@ f.	Agregar productos: Utilizar la instancia la clase 'Order', del paso c y llama
 
 """
 #Write your code here
+from datetime import datetime
 from users import *
+from util.converter import cashiers_read_list, customers_read_list, products_read_list, print_list 
+from orders.order import Order
+from products.product import Product
 
-    
 class PrepareOrder:
- #Write your code here
- pass
+   #Write your code her
+   def __init__(self, cashiers: list, customers: list, products: list, 
+                input_customer: bool, input_cashier: bool, input_product: bool ):
+      self.list_customers = customers
+      self.list_cashiers = cashiers
+      self.list_products = products
+      self.input_customer = input_customer
+      self.input_cashier = input_cashier
+      self.input_products = input_product
+
+   def find_cashier_dni (self, dni:str) -> Cashier:
+       for cashier in self.list_cashiers:
+          if cashier.dni == dni:
+             return cashier
+       return (f"Error. The input ID {dni} is not find in our cashiers.csv database.")
+
+   def find_customer_dni (self, dni:str) -> Customer:
+       for customer in self.list_customers:
+          if customer.dni == dni:
+             return customer
+       return(f"Error. The input ID {dni} is not find in our customers.csv database.")   
+   
+   def find_product_ID (self, id:str) -> Product:
+       for product in self.list_products:
+          if product.id.lower() == id.lower():
+             return product
+       return (f"The input {id} is not find in our product database.")
+   
+   def get_current_datetime() -> datetime:
+       now = datetime.now()
+       return (now.strftime("%Y-%m-%d %H:%M:%S"))
+   
+
+# Cridem les funcions que ens llegiran els fitxers csv.
+# Carregara la informació al objecte PrepareOrder 
+list_cashiers=cashiers_read_list ()
+#print_list (list_cashiers) 
+list_customers=customers_read_list ()
+#print_list (list_customers) 
+list_products=products_read_list ()
+#print_list (list_products)
+
+# Creem una instancia
+# Preparem una ordre
+info_list_order=PrepareOrder (list_cashiers, list_customers, list_products, False, False, False)
+
+preparing_order = True
+while (preparing_order and not info_list_order.input_cashier):
+    print ('-------------')
+    print ('LIST CASHIERS')
+    print ('-------------')
+    print_list(list_cashiers)
+    dni_cashier = (input ("Enter ID cashier :")) 
+    cashier_ordering=info_list_order.find_cashier_dni (dni_cashier)
+    if (isinstance(cashier_ordering, Cashier)):
+        print ("Input Cashier for this ordering :", end = " ")
+        print (cashier_ordering.describe())
+        info_list_order.input_cashier=True
+    else:
+        print (cashier_ordering)
+        print ("Do you want to continue with the order ?")
+        answer=input ("Yes to continue or other key to abort ordering :")
+        if answer.lower() == "yes" or answer.lower() == "y":
+           preparing_order=True
+        else:
+           preparing_order=False
+
+while (preparing_order and info_list_order.input_cashier and not info_list_order.input_customer):
+    print ('--------------')
+    print ('LIST CUSTOMERS')
+    print ('--------------')      
+    print_list(list_customers)
+    dni_customer = (input ("Enter ID customer :"))
+    customer_ordering=info_list_order.find_customer_dni (dni_customer)
+    if (isinstance(customer_ordering, Customer)):
+       print ("Input Customer for this ordering :", end =" ")
+       print (customer_ordering.describe())
+       info_list_order.input_customer=True
+    else:
+       print (customer_ordering)
+       print ("Do you want to continue with the order ?")
+       answer=input ("Yes to continue or other key to abort ordering :")
+       if answer.lower() == "yes" or answer.lower() == "y":
+           preparing_order=True
+       else:
+           preparing_order=False           
+
+# Inicialitzem l'ordre - amb el caixer / customer entrats anteriorment
+if preparing_order and info_list_order.input_cashier and info_list_order.input_customer:
+    current_order = Order(cashier_ordering, customer_ordering)
+    # Llistem productes
+    print ('--------------')
+    print ('START ORDERING')
+    print ('--------------')          
+    print_list (list_products)
+
+while (preparing_order and info_list_order.input_cashier and info_list_order.input_customer and not info_list_order.input_products):
+    print ('------------------------------------')
+    id_product = (input ("Input ID product :"))
+    product_ordering=info_list_order.find_product_ID (id_product)
+    if (isinstance(product_ordering, Product)):
+        current_order.add(product_ordering)
+        print ("Product added :", end = " ")
+        print (product_ordering.describe())
+    else:
+       print (product_ordering)
+    
+    #print ("Do you want to add another product? ")
+    #print ("Yes (add product)   / No (finish ordering)")
+    #print ("Show (see ordering) / List (see products)")
+    #another = (input ("Abort (abort ordering). Enter selection :"))
+    new_action = True
+    while (new_action):
+        print ('------------------------------------')
+        print ("Do you want to add another product? ")
+        print ("Yes (add product) / No (finish ordering)")
+        print ("Show (see ordering) / List (see products) / Abort (abort ordering)")   
+        another = (input ("Enter selection :"))
+        if another.lower() == 'yes' or another.lower() == 'y':
+           preparing_order = True
+           new_action = False
+        elif (another.lower() == 'no' or another.lower() =='n' and current_order.products):
+           info_list_order.input_products = True
+           new_action = False
+        elif (another.lower() == 'show' or another.lower()=='s'):
+           print ("Current Order :")
+           current_order.show ()
+        elif (another.lower() == 'list' or another.lower() == 'l'):
+           print ("Product List :")
+           print_list (list_products)
+        elif (another.lower() == 'abort' or another.lower() == 'a'):
+           print ('Exit seleccion selected')
+           print ('The order is cancelled')
+           new_action = False
+           preparing_order=False
+        else:
+           print ('Selection not valid. Try again')       
+        
+if (info_list_order.input_cashier and info_list_order.input_customer and info_list_order.input_products):
+    print ('-----------')
+    print ('FINAL ORDER')
+    print ('-----------')
+    current_order.show()
+    
+
+
+
 
