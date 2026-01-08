@@ -48,23 +48,27 @@ class ProductConverter(Converter):
 Llegirà un fitxer csv indicat en el path 
 retornarà in data frame'''
 def Read_CSV (path: str):
-  obj_csv=CSVFileManager(path)
-  df=obj_csv.read()
+  #obj_csv=CSVFileManager(path)
+  df=CSVFileManager(path).read()
   return df
 
 def cashiers_read_list () -> list:
      df = Read_CSV ("data/cashiers.CSV")
      converter = CashierConverter ()
      list=converter.convert(df)
+     print ("Cashiers_List")
+     converter.print(list)
      return list
 
 def customers_read_list () -> list:
      df = Read_CSV ("data/customers.csv")
      converter = CustomerConverter ()
      list=converter.convert(df)
+     print ("Customer_List")
+     converter.print(list)
      return list
 
-Product, Hamburger, Soda, Drink, HappyMeal
+
 
 def products_read_list () -> list:
      
@@ -79,6 +83,8 @@ def products_read_list () -> list:
         converter = ProductConverter ()
         product_class = path_product.get(path)
         list_products += converter.convert(df,product_class)
+     print ("Product_List")
+     converter.print(list_products)
      return list_products    
 
 def print_list (list):
@@ -87,8 +93,15 @@ def print_list (list):
         print(item.describe())
 
 
-def write_order 
-
+def save_information_order_csv (order_data: list) :
+    #    
+    headers = ["dni_cashier", "dni_customer",
+               "datetime_order", "total_order" ]
+    df = pd.DataFrame([order_data], columns=headers)
+    csv_order = CSVFileManager ("data/Orders_list.csv")
+    csv_order.write (df)
+    
+    
 ''' comença el codi per provar els cashers 
 pd_cash_obj=CSVFileManager("data/cashiers.csv")
 print ("final funcio")

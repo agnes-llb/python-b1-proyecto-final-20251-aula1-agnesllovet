@@ -104,20 +104,21 @@ f.	Agregar productos: Utilizar la instancia la clase 'Order', del paso c y llama
 #Write your code here
 from datetime import datetime
 from users import *
-from util.converter import cashiers_read_list, customers_read_list, products_read_list, print_list 
+from util.converter import cashiers_read_list, customers_read_list, products_read_list, print_list, save_information_order_csv
 from orders.order import Order
 from products.product import Product
 
 class PrepareOrder:
    #Write your code her
-   def __init__(self, cashiers: list, customers: list, products: list, 
-                input_customer: bool, input_cashier: bool, input_product: bool ):
+   def __init__(self, cashiers: list, customers: list, products: list, preparing_order: bool,
+                input_customer: bool, input_cashier: bool, input_products: bool ):
       self.list_customers = customers
       self.list_cashiers = cashiers
       self.list_products = products
+      self.preparing_order = preparing_order
       self.input_customer = input_customer
       self.input_cashier = input_cashier
-      self.input_products = input_product
+      self.input_products = input_products
 
    def find_cashier_dni (self, dni:str) -> Cashier:
        for cashier in self.list_cashiers:
@@ -137,26 +138,29 @@ class PrepareOrder:
              return product
        return (f"The input {id} is not find in our product database.")
    
-   def get_current_datetime() -> datetime:
-       now = datetime.now()
-       return (now.strftime("%Y-%m-%d %H:%M:%S"))
+   def get_current_datetime(self) -> datetime:
+       return (datetime.now())
+       #return (now.strftime("%Y-%m-%d %H:%M:%S"))
    
 
 # Cridem les funcions que ens llegiran els fitxers csv.
-# Carregara la informació al objecte PrepareOrder 
+# Carregara la informació al objecte PrepareOrder
+print ("Starting Application ....")
+print ("Reading database     ....")
 list_cashiers=cashiers_read_list ()
 #print_list (list_cashiers) 
 list_customers=customers_read_list ()
 #print_list (list_customers) 
 list_products=products_read_list ()
 #print_list (list_products)
-
+#print ("Started succesfull")
 # Creem una instancia
 # Preparem una ordre
-info_list_order=PrepareOrder (list_cashiers, list_customers, list_products, False, False, False)
+print ("Starting Preparation Ordering...")
+info_list_order=PrepareOrder (list_cashiers, list_customers, list_products, True, False, False, False)
 
-preparing_order = True
-while (preparing_order and not info_list_order.input_cashier):
+#preparing_order = True
+while (info_list_order.preparing_order and not info_list_order.input_cashier):
     print ('-------------')
     print ('LIST CASHIERS')
     print ('-------------')
@@ -172,11 +176,11 @@ while (preparing_order and not info_list_order.input_cashier):
         print ("Do you want to continue with the order ?")
         answer=input ("Yes to continue or other key to abort ordering :")
         if answer.lower() == "yes" or answer.lower() == "y":
-           preparing_order=True
+           info_list_order.preparing_order=True
         else:
-           preparing_order=False
+           info_list_order.preparing_order=False
 
-while (preparing_order and info_list_order.input_cashier and not info_list_order.input_customer):
+while (info_list_order.preparing_order and info_list_order.input_cashier and not info_list_order.input_customer):
     print ('--------------')
     print ('LIST CUSTOMERS')
     print ('--------------')      
@@ -192,20 +196,21 @@ while (preparing_order and info_list_order.input_cashier and not info_list_order
        print ("Do you want to continue with the order ?")
        answer=input ("Yes to continue or other key to abort ordering :")
        if answer.lower() == "yes" or answer.lower() == "y":
-           preparing_order=True
+           info_list_order.preparing_order=True
        else:
-           preparing_order=False           
+           info_list_order.preparing_order=False           
 
 # Inicialitzem l'ordre - amb el caixer / customer entrats anteriorment
-if preparing_order and info_list_order.input_cashier and info_list_order.input_customer:
+if info_list_order.preparing_order and info_list_order.input_cashier and info_list_order.input_customer:
     current_order = Order(cashier_ordering, customer_ordering)
     # Llistem productes
-    print ('--------------')
-    print ('START ORDERING')
-    print ('--------------')          
+    print ('-----------------')
+    print ('STARTING ORDERING')
+    print ('-----------------')          
     print_list (list_products)
+    time_ordering = info_list_order.get_current_datetime()
 
-while (preparing_order and info_list_order.input_cashier and info_list_order.input_customer and not info_list_order.input_products):
+while (info_list_order.preparing_order and info_list_order.input_cashier and info_list_order.input_customer and not info_list_order.input_products):
     print ('------------------------------------')
     id_product = (input ("Input ID product :"))
     product_ordering=info_list_order.find_product_ID (id_product)
@@ -228,7 +233,7 @@ while (preparing_order and info_list_order.input_cashier and info_list_order.inp
         print ("Show (see ordering) / List (see products) / Abort (abort ordering)")   
         another = (input ("Enter selection :"))
         if another.lower() == 'yes' or another.lower() == 'y':
-           preparing_order = True
+           info_list_order.preparing_order = True
            new_action = False
         elif (another.lower() == 'no' or another.lower() =='n' and current_order.products):
            info_list_order.input_products = True
@@ -243,16 +248,23 @@ while (preparing_order and info_list_order.input_cashier and info_list_order.inp
            print ('Exit seleccion selected')
            print ('The order is cancelled')
            new_action = False
-           preparing_order=False
+           info_list_order.preparing_order=False
         else:
            print ('Selection not valid. Try again')       
         
-if (info_list_order.input_cashier and info_list_order.input_customer and info_list_order.input_products):
+if (info_list_order.input_cashier and info_list_order.input_customer and 
+        info_list_order.preparing_order and info_list_order.input_products):
     print ('-----------')
     print ('FINAL ORDER')
     print ('-----------')
     current_order.show()
-    
+    # Write CSV information
+    # We need 1 DNI cashier / DNI Customer / datetime ordering / Total
+    order_data = [current_order.cashier.dni, current_order.customer.dni, 
+                     time_ordering.strftime("%Y-%m-%d %H:%M:%S"), round(current_order.calculateTotal(), 2)]
+    #print (list_save_csv)
+    save_information_order_csv (order_data)
+
 
 
 
