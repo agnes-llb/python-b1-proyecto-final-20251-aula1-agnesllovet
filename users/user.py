@@ -10,23 +10,25 @@ class User(ABC):
   def describe(self):
       pass
 
+
 class Cashier(User): 
   def __init__(self,dni:str,name:str,age:int,timeTable:str,salary:float):
-    #Write your code here
+    #Use the constructor for atributs commons from parent class
     super().__init__(dni,name,age)
+    #Define the especific atributs for this class
     self.timeTable = timeTable
     self.salary = salary
-
   def describe(self):
-        return f"Cashier - Name: {self.name}, DNI: {self.dni} , Timetable: {self.timeTable}, Salary: {self.salary}."
+        return (f"Cashier - Name: {self.name}, DNI: {self.dni}, Timetable: {self.timeTable}, Salary: {self.salary}.")
+
+
 
 class Customer(User):
   def __init__(self,dni:str,name:str,age:int,email:str,postalCode:str):
-    #Write your code here
+    #Use the constructor for atributs commons from parent class
     super().__init__(dni,name,age)
+    #Define the especific atributs for this class
     self.email = email
     self.postalCode = postalCode
-
   def describe(self):
-        return f"Customer - Name: {self.name}, DNI: {self.dni} , Age: {self.age}, Email: {self.email}, Postal Code: {self.postalCode}"
-  
+        return (f"Customer - Name: {self.name}, DNI: {self.dni} , Age: {self.age}, Email: {self.email}, Postal Code: {self.postalCode}")

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 #Write your code here
-# Import from module "food_package.py" the needed objects
+# Import from module "food_package.py" the objects used in this module
 from products.food_package import FoodPackage, Wrapping, Bottle, Glass, Box
 
 class Product(ABC):
@@ -9,7 +9,7 @@ class Product(ABC):
       self.name = name
       self.price = price     
     
-    def describe(self):
+    def describe(self) -> str:
         return f"Product - Type: {self.type()}, Name: {self.name}, Id: {self.id} , Price: {self.price} , {self.foodPackage().describe()}."   
     
     @abstractmethod
@@ -23,7 +23,7 @@ class Hamburger(Product):
     def __init__(self,id:str,name:str,price:float):
         super().__init__(id,name,price)
     def type(self) -> str:
-        return "Hamburguesa"
+        return "Hamburguer"
     def foodPackage(self) -> FoodPackage:
         return Wrapping()
         
