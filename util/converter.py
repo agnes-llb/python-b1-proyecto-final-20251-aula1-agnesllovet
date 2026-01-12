@@ -1,13 +1,9 @@
 from abc import ABC, abstractmethod
 import pandas as pd
-
-#''' provisional per poder executar-ho'''
-#import sys, os
-#sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from users.user import Cashier, Customer
 from products.product import Product, Hamburger, Soda, Drink, HappyMeal
 from util.file_manager import CSVFileManager
+
 
 class Converter(ABC):
   @abstractmethod
@@ -18,29 +14,71 @@ class Converter(ABC):
       print(item.describe())
 
 class CashierConverter(Converter):
+  """
+    Methode convert :Convert a DataFrame into Cashier instances.
+    Expected DataFrame columns:
+        - dni
+        - name
+        - age
+        - timetable
+        - salary
+        Args:
+            dataFrame (pd.DataFrame): DataFrame with cashier information.
+        Returns:
+            list[Cashier]: List of Cashier objects.
+  """
   def convert(self,dataFrame):    
     #Write your code here
     #convertir dataframe a instancies d'objecte
     list_Cashiers = []
     for row in dataFrame.itertuples(False):
-      list_Cashiers.append (Cashier (str(row.dni),str(row.name),int(row.age),row.timetable,float(row.salary)))
+      list_Cashiers.append (Cashier (str(row.dni),str(row.name),
+                                   int(row.age),row.timetable,float(row.salary)))
     return list_Cashiers
 
 class CustomerConverter(Converter):
+  """
+   Methode convert :Convert a DataFrame into Customer instances.
+    Expected DataFrame columns:
+      - dni
+      - name
+      - age
+      - email
+       - postalcode
+    Args:
+       dataFrame (pd.DataFrame): DataFrame with customer information.
+    Returns:
+       list[Customer]: List of Customer objects.
+        """   
   def convert(self,dataFrame):   
     #Write your code here
     #convertir dataframe a instancies d'objecte
     list_Customers =[]
     for row in dataFrame.itertuples(False):
-      list_Customers.append (Customer(str(row.dni),str(row.name),int(row.age), str(row.email),str(row.postalcode)))
+      list_Customers.append (Customer(str(row.dni),str(row.name),
+                             int(row.age), str(row.email),str(row.postalcode)))
     return list_Customers 
 
 class ProductConverter(Converter):
-   def convert(self, dataFrame:pd.DataFrame, ProductClass: type[Product]):
-    list=[]
+  """
+   Convert a DataFrame into Product instances.
+    This converter allows passing the Product class as a parameter,
+    making it reusable for subclasses of Product.
+    Expected DataFrame columns:
+        - id
+        - name
+        - price
+    Args:
+        dataFrame (pd.DataFrame): DataFrame with product information.
+        ProductClass (type[Product]): Class used to create product instances.
+    Returns:
+        products[Product]: List of Product objects.
+   """
+  def convert(self, dataFrame:pd.DataFrame, ProductClass: type[Product]):
+    products=[]
     for row in dataFrame.itertuples(False):
-      list.append (ProductClass(str(row.id),str(row.name),float(row.price)))
-    return list
+      products.append (ProductClass(str(row.id),str(row.name),float(row.price)))
+    return products
 
 
 

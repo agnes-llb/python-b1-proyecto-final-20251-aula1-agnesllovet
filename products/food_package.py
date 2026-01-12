@@ -1,4 +1,3 @@
-#Write your code here
 # Import modul for abstract class
 from abc import ABC,abstractmethod
 

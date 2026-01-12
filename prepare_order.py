@@ -101,13 +101,12 @@ f.	Agregar productos: Utilizar la instancia la clase 'Order', del paso c y llama
 
 
 """
-#Write your code here
+# Imports from other moduls
 from datetime import datetime
-from users import *
+from users import Cashier, Customer
 from util.converter import cashiers_read_list, customers_read_list, products_read_list, print_list, save_order_information_csv
 from orders.order import Order
 from products.product import Product
-
 
 """
     Class : PrepareOrder manages the process of preparing a sales order.
@@ -372,7 +371,9 @@ def select_products (info_list_order: PrepareOrder, current_order: Order) -> Non
                info_list_order.preparing_order=False
             # Another option - show the message again 
             else:
-               print ('Selection not valid. Try again')       
+               print ('Selection not valid. Try again')
+               if (not current_order.products):
+                    print ('No selected product. Select product or Abort process')       
     return None
 
 
@@ -445,7 +446,7 @@ def main ():
         # Save the inforamtion to the CSV file
         save_order_information_csv(order_data)
     else:
-        print ("Finish process")
+        print ("Finished process")
         print ("The current order is cancelled")
 
 # If execute file : execute process  
