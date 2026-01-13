@@ -352,7 +352,7 @@ def select_products (info_list_order: PrepareOrder, current_order: Order) -> Non
                info_list_order.preparing_order = True
                new_action = False
             # Option "no" the order is finish no more products
-            elif (another.lower() == 'no' or another.lower() =='n' and current_order.products):
+            elif ((another.lower() == 'no' or another.lower() =='n') and current_order.products):
                info_list_order.input_products = True
                new_action = False
             # Option "show" Show the current order till now
